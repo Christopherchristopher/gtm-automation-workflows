@@ -37,17 +37,17 @@
       "parameters": {
         "documentId": {
           "__rl": true,
-          "value": "1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk",
+          "value": "YOUR_SHEET_ID",
           "mode": "list",
           "cachedResultName": "Copy of Lead_Orchestrator_Sample (1)",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": 1825069943,
           "mode": "list",
           "cachedResultName": "Dead Letter",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit#gid=1825069943"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=1825069943"
         },
         "options": {}
       },
@@ -70,17 +70,17 @@
       "parameters": {
         "documentId": {
           "__rl": true,
-          "value": "1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk",
+          "value": "YOUR_SHEET_ID",
           "mode": "list",
           "cachedResultName": "Copy of Lead_Orchestrator_Sample (1)",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": 2109278592,
           "mode": "list",
           "cachedResultName": "Log",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit#gid=2109278592"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=2109278592"
         },
         "options": {}
       },
@@ -103,17 +103,17 @@
       "parameters": {
         "documentId": {
           "__rl": true,
-          "value": "1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk",
+          "value": "YOUR_SHEET_ID",
           "mode": "list",
           "cachedResultName": "Copy of Lead_Orchestrator_Sample (1)",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": 1814097124,
           "mode": "list",
           "cachedResultName": "Suppressed",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit#gid=1814097124"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=1814097124"
         },
         "options": {}
       },
@@ -136,17 +136,17 @@
       "parameters": {
         "documentId": {
           "__rl": true,
-          "value": "1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk",
+          "value": "YOUR_SHEET_ID",
           "mode": "list",
           "cachedResultName": "Copy of Lead_Orchestrator_Sample (1)",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": 19297417,
           "mode": "list",
           "cachedResultName": "Nurture",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit#gid=19297417"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=19297417"
         },
         "options": {}
       },
@@ -184,7 +184,7 @@
         "select": "channel",
         "channelId": {
           "__rl": true,
-          "value": "C0BL455S10U",
+          "value": "YOUR_CHANNEL_ID",
           "mode": "list",
           "cachedResultName": "n8n-testing-101"
         },
@@ -199,7 +199,7 @@
       ],
       "id": "a25b1d87-9f68-439a-9166-17800cef952c",
       "name": "Send a message",
-      "webhookId": "90687bd9-92b4-45fe-98a0-33ca96625dd2",
+      "webhookId": "YOUR_WEBHOOK_ID",
       "credentials": {
         "slackOAuth2Api": {
           "id": "skasQC3Hs7KtThMR",
@@ -311,7 +311,7 @@
   "versionId": "2023a90d-b9cb-481f-a291-a8b602355ba0",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "8562bf056e529f76d8683b260a47180b4a7d7bd407873208d1601dfe544d2130"
+    "instanceId": "YOUR_INSTANT_ID"
   },
   "nodeGroups": [],
   "id": "bhbmr3iDlsWZZVf5",
