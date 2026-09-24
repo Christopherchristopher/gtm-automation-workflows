@@ -1,0 +1,319 @@
+{
+  "name": "WORKFLOW DIGEST",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        288
+      ],
+      "id": "59fa5da3-8b5a-4ddf-ab8f-97dd5e8d7058",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "const log = $('Log').all();\nconst suppressed = $('Suppressed').all();\nconst nurture = $('Nurture').all();\nconst deadLetter = $('Dead Letter').all();\n\nconst total = log.length + suppressed.length + nurture.length + deadLetter.length;\nconst errorRate = total > 0 ? ((deadLetter.length / total) * 100).toFixed(1) : 0;\n\nreturn [{\n  json: {\n    summary: `📊 Lead Orchestrator Digest\\nProcessed: ${log.length}\\nSuppressed (duplicates): ${suppressed.length}\\nRouted to Nurture: ${nurture.length}\\nErrors: ${deadLetter.length}\\nError rate: ${errorRate}%`\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        944,
+        192
+      ],
+      "id": "de5ec8db-75fc-4575-9ea1-f0f8d6872666",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk",
+          "mode": "list",
+          "cachedResultName": "Copy of Lead_Orchestrator_Sample (1)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1825069943,
+          "mode": "list",
+          "cachedResultName": "Dead Letter",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit#gid=1825069943"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "1ecc0424-c22a-4b99-b635-465cf6424269",
+      "name": "Dead Letter",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pCbxE9ECJnybsvn1",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk",
+          "mode": "list",
+          "cachedResultName": "Copy of Lead_Orchestrator_Sample (1)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2109278592,
+          "mode": "list",
+          "cachedResultName": "Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit#gid=2109278592"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        192
+      ],
+      "id": "6329b30d-a5d1-46aa-8421-212cdf8368c7",
+      "name": "Log",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pCbxE9ECJnybsvn1",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk",
+          "mode": "list",
+          "cachedResultName": "Copy of Lead_Orchestrator_Sample (1)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1814097124,
+          "mode": "list",
+          "cachedResultName": "Suppressed",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit#gid=1814097124"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        384
+      ],
+      "id": "0335372d-b5a2-4025-9bab-ae2960660ffd",
+      "name": "Suppressed",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pCbxE9ECJnybsvn1",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk",
+          "mode": "list",
+          "cachedResultName": "Copy of Lead_Orchestrator_Sample (1)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 19297417,
+          "mode": "list",
+          "cachedResultName": "Nurture",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit#gid=19297417"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        576
+      ],
+      "id": "a8300b7c-4f07-4daa-a295-eec0fe9e50db",
+      "name": "Nurture",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pCbxE9ECJnybsvn1",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        736,
+        160
+      ],
+      "id": "24e0092e-332d-4bfc-a453-26b9f1a55743",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BL455S10U",
+          "mode": "list",
+          "cachedResultName": "n8n-testing-101"
+        },
+        "text": "={{ $json.summary }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.7,
+      "position": [
+        1168,
+        192
+      ],
+      "id": "a25b1d87-9f68-439a-9166-17800cef952c",
+      "name": "Send a message",
+      "webhookId": "90687bd9-92b4-45fe-98a0-33ca96625dd2",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "skasQC3Hs7KtThMR",
+          "name": "Slack account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Nurture",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Dead Letter",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Suppressed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dead Letter": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nurture": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Log": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Suppressed": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "2023a90d-b9cb-481f-a291-a8b602355ba0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8562bf056e529f76d8683b260a47180b4a7d7bd407873208d1601dfe544d2130"
+  },
+  "nodeGroups": [],
+  "id": "bhbmr3iDlsWZZVf5",
+  "tags": []
+}
