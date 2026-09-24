@@ -1,0 +1,448 @@
+{
+  "name": "n8n Triage Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "YOUR_WEBHOOK_ID",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -176,
+        -928
+      ],
+      "id": "0b4791aa-919f-42d2-995a-e4beb6503f8c",
+      "name": "New Ticket Trigger",
+      "webhookId": "YOUR_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "50a365b7-4885-453e-9b1a-bbfe18090a7d",
+              "leftValue": "={{ $json.body.ticket.tags }}",
+              "rightValue": "=auto-triage",
+              "operator": {
+                "type": "array",
+                "operation": "notContains",
+                "rightType": "any"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        48,
+        -928
+      ],
+      "id": "33c3f72e-c5ad-44e3-a3b4-8cd212850a0f",
+      "name": "Skipped If Already Triaged"
+    },
+    {
+      "parameters": {
+        "url": "=https://YOUR_Subdomain.zendesk.com/api/v2/users/{{ $json.body.ticket.requester_id }}/tickets/requested",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "oAuth2Api",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        272,
+        -928
+      ],
+      "id": "958c6cb7-b20e-4a77-a587-eb63cd2724a4",
+      "name": "Get Requester History",
+      "credentials": {
+        "oAuth2Api": {
+          "id": "gVofpj33vAW5uwU8",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are a support ticket classifier. Read the ticket subject and description below and respond ONLY with strict JSON in this exact shape, no other text:\n\n{\"intent\": string, \"urgency\": \"low\"|\"medium\"|\"high\"|\"critical\", \"sentiment\": \"positive\"|\"neutral\"|\"negative\"|\"very_negative\", \"suggested_team\": string}\n\nSubject: {{ $('New Ticket Trigger').item.json.body.ticket.subject }}\nDescription: {{ $('New Ticket Trigger').item.json.body.ticket.description }}\nPrior ticket from this requester : {{  $json.tickets.length }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        496,
+        -928
+      ],
+      "id": "6238aa0c-0463-4533-8112-c22593c83c60",
+      "name": "Classify Ticket (AI)",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst raw = $input.first().json.output[0].content[0].text;\nlet parsed;\ntry {\n  parsed = JSON.parse(raw);\n} catch (e) {\n  parsed = { intent: 'unknown', urgency: 'medium', sentiment: 'neutral', suggested_team: 'general' };\n}\n\nconst urgencyToPriority = {\n  low: 'low',\n  medium: 'normal',\n  high: 'high',\n  critical: 'urgent'\n};\n\nreturn [{\n  json: {\n    ticket_id: $('New Ticket Trigger').item.json.body.ticket.id,\n    intent: parsed.intent,\n    urgency: parsed.urgency,\n    sentiment: parsed.sentiment,\n    suggested_team: parsed.suggested_team,\n    priority: urgencyToPriority[parsed.urgency] || 'normal',\n    is_critical: parsed.urgency === 'critical' || parsed.sentiment === 'very_negative'\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        848,
+        -928
+      ],
+      "id": "2247c462-20d7-4d6e-8c22-747ae2967688",
+      "name": "Map to Zendesk Fields"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://YOUR_Subdomain.zendesk.com/api/v2/tickets/{{ $json.ticket_id }}.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "oAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"ticket\": {\n    \"priority\": \"{{ $json.priority }}\",\n    \"tags\": [\"auto-triaged\", \"{{ $json.intent }}\"]\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1072,
+        -928
+      ],
+      "id": "4e86ade4-a294-4be2-9769-cc4bf6af0a29",
+      "name": "Update Ticket in Zendesk",
+      "credentials": {
+        "oAuth2Api": {
+          "id": "gVofpj33vAW5uwU8",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "88e229e7-83f2-4ec6-8a27-ae6efb0d085b",
+              "leftValue": "={{ $(\"Map to Zendesk Fields\").item.json.is_critical }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1296,
+        -928
+      ],
+      "id": "3d79dd0a-a67a-4cd4-869a-749c98c81441",
+      "name": "Check if Critical"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "YOUR_CHANNEL_ID",
+          "mode": "list",
+          "cachedResultName": "new-channel"
+        },
+        "text": "=🚨 Critical ticket flagged: #{{ $('Map to Zendesk Fields').item.json.ticket_id }} Intent: {{ $('Map to Zendesk Fields').item.json.intent }} Sentiment: {{ $('Map to Zendesk Fields').item.json.sentiment }} Link: https://YOUR_Subdomain.zendesk.com/agent/tickets/{{ $('Map to Zendesk Fields').item.json.ticket_id }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.7,
+      "position": [
+        1312,
+        -1104
+      ],
+      "id": "592d70f8-8744-4062-9293-57b935f3786c",
+      "name": "Alert On-Call (Criticial)",
+      "webhookId": "05425602-0a95-4154-8d03-95a77f0ba9df",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "skasQC3Hs7KtThMR",
+          "name": "Slack account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_URL_ID",
+          "mode": "list",
+          "cachedResultName": "Ticket Triage Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_URL_ID/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_URL_ID/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ticket_id": "={{ $('Map to Zendesk Fields').item.json.ticket_id }}",
+            "intent": "={{ $('Map to Zendesk Fields').item.json.intent }}",
+            "urgency": "={{ $('Map to Zendesk Fields').item.json.urgency }}",
+            "sentiment": "={{ $('Map to Zendesk Fields').item.json.sentiment }}",
+            "priority": "={{ $('Map to Zendesk Fields').item.json.priority }}",
+            "is_critical": "={{ $('Map to Zendesk Fields').item.json.is_critical }}",
+            "timestamp": "={{ $now.toISO() }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ticket_id",
+              "displayName": "ticket_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "intent",
+              "displayName": "intent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "urgency",
+              "displayName": "urgency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sentiment",
+              "displayName": "sentiment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "priority",
+              "displayName": "priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "is_critical",
+              "displayName": "is_critical",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1584,
+        -736
+      ],
+      "id": "c1cc6b27-6ee9-4be9-8533-25c60a6c08ad",
+      "name": "Log NoN-Critical Ticket",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pCbxE9ECJnybsvn1",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "New Ticket Trigger": [
+      {
+        "json": {
+          "body": {
+            "ticket": {
+              "id": 1,
+              "subject": "SAMPLE: Unable to log in after password reset",
+              "description": "Hi, I reset my password earlier today, but I'm still not able to log in. I keep getting an error message when I try, and I've already attempted it a couple of times. Could someone please take a look? I need to get into my account as soon as possible.",
+              "tags": [],
+              "requester_id": 6289601230367,
+              "created_at": "2026-09-15T12:35:16Z"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "connections": {
+    "New Ticket Trigger": {
+      "main": [
+        [
+          {
+            "node": "Skipped If Already Triaged",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Skipped If Already Triaged": {
+      "main": [
+        [
+          {
+            "node": "Get Requester History",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Requester History": {
+      "main": [
+        [
+          {
+            "node": "Classify Ticket (AI)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classify Ticket (AI)": {
+      "main": [
+        [
+          {
+            "node": "Map to Zendesk Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map to Zendesk Fields": {
+      "main": [
+        [
+          {
+            "node": "Update Ticket in Zendesk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Ticket in Zendesk": {
+      "main": [
+        [
+          {
+            "node": "Check if Critical",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if Critical": {
+      "main": [
+        [
+          {
+            "node": "Alert On-Call (Criticial)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log NoN-Critical Ticket",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log NoN-Critical Ticket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "ab68e159-ad5b-4621-b9ad-840b9d670632",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "YOUR_INSTANCE_ID"
+  },
+  "nodeGroups": [],
+  "id": "48cEZ6xeJh2Fgzkv",
+  "tags": []
+}
