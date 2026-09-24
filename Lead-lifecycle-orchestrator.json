@@ -22,7 +22,7 @@
       "parameters": {
         "documentId": {
           "__rl": true,
-          "value": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit?gid=576059557#gid=576059557",
+          "value": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?gid=576059557#gid=576059557",
           "mode": "url"
         },
         "sheetName": {
@@ -30,7 +30,7 @@
           "value": 576059557,
           "mode": "list",
           "cachedResultName": "Input",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit#gid=576059557"
+          "YOUR_SLACK_URL": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=576059557"
         },
         "options": {}
       },
@@ -231,7 +231,7 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit?gid=576059557#gid=576059557",
+          "value": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?gid=576059557#gid=576059557",
           "mode": "url"
         },
         "sheetName": {
@@ -239,7 +239,7 @@
           "value": 1814097124,
           "mode": "list",
           "cachedResultName": "Suppressed",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit#gid=1814097124"
+          "YOUR_SLACK_URL": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=1814097124"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -368,7 +368,7 @@
         "select": "channel",
         "channelId": {
           "__rl": true,
-          "value": "C0BL455S10U",
+          "value": "YOUR_CHANNEL_ID",
           "mode": "list",
           "cachedResultName": "n8n-testing-101"
         },
@@ -398,17 +398,17 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk",
+          "value": "YOUR_SHEET_ID",
           "mode": "list",
           "cachedResultName": "Copy of Lead_Orchestrator_Sample (1)",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit?usp=drivesdk"
+          "YOUR_SLACK_URL": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": 2109278592,
           "mode": "list",
           "cachedResultName": "Log",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit#gid=2109278592"
+          "YOUR_SLACK_URL": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=2109278592"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -492,7 +492,7 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit?gid=1814097124#gid=1814097124",
+          "value": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?gid=1814097124#gid=1814097124",
           "mode": "url"
         },
         "sheetName": {
@@ -500,7 +500,7 @@
           "value": 19297417,
           "mode": "list",
           "cachedResultName": "Nurture",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit#gid=19297417"
+          "YOUR_SLACK_URL": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=19297417"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -574,17 +574,17 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk",
+          "value": "YOUR_SHEET_ID",
           "mode": "list",
           "cachedResultName": "Copy of Lead_Orchestrator_Sample (1)",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit?usp=drivesdk"
+          "YOUR_SLACK_URL": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": 1825069943,
           "mode": "list",
           "cachedResultName": "Dead Letter",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit#gid=1825069943"
+          "YOUR_SLACK_URL": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=1825069943"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -678,17 +678,17 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk",
+          "value": "YOUR_SHEET_ID",
           "mode": "list",
           "cachedResultName": "Copy of Lead_Orchestrator_Sample (1)",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit?usp=drivesdk"
+          "YOUR_SLACK_URL": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": 1825069943,
           "mode": "list",
           "cachedResultName": "Dead Letter",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit#gid=1825069943"
+          "YOUR_SLACK_URL": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=1825069943"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -782,17 +782,17 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk",
+          "value": "YOUR_SHEET_ID",
           "mode": "list",
           "cachedResultName": "Copy of Lead_Orchestrator_Sample (1)",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit?usp=drivesdk"
+          "YOUR_SLACK_URL": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": 1825069943,
           "mode": "list",
           "cachedResultName": "Dead Letter",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit#gid=1825069943"
+          "YOUR_SLACK_URL": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=1825069943"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -1027,7 +1027,7 @@
   "versionId": "10ade401-23ac-469f-ae46-425274882f34",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "8562bf056e529f76d8683b260a47180b4a7d7bd407873208d1601dfe544d2130"
+    "instanceId":YOUR_INSTANCE_ID
   },
   "nodeGroups": [],
   "id": "j0Zgt3FGKQ2vkVlZ",
