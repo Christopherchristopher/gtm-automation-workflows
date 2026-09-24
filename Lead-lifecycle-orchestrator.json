@@ -1,0 +1,1035 @@
+{
+  "name": "LEAD CYCLE ORCHERSTRATOR",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -1440,
+        -512
+      ],
+      "id": "c2799cb5-7b96-4324-a196-14fb07aed7d7",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit?gid=576059557#gid=576059557",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 576059557,
+          "mode": "list",
+          "cachedResultName": "Input",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit#gid=576059557"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1216,
+        -512
+      ],
+      "id": "d67a8c5f-76a9-4914-ba06-7d3830cc5e15",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pCbxE9ECJnybsvn1",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "554ab0ed-63da-4b2e-a68b-e39efad81343",
+              "name": "email",
+              "value": "={{ $json.email.trim().toLowerCase()}}",
+              "type": "string"
+            },
+            {
+              "id": "13ed9364-4194-46ae-a0a2-044dee86c115",
+              "name": "domain",
+              "value": "={{ $json.domain.trim().toLowerCase()}}",
+              "type": "string"
+            },
+            {
+              "id": "8159a20d-c27b-4ee8-a5de-9509f67fd698",
+              "name": "company",
+              "value": "={{ $json.company.trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "38f7afe3-f24c-47f3-b6a5-d475adb06fc7",
+              "name": "tier",
+              "value": "={{ $json.tier.trim().toUpperCase() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": "",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -992,
+        -512
+      ],
+      "id": "b4018590-5dc7-4d83-9663-f734dc837494",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "const seen = new Set();\nreturn $input.all().map(item => {\n  const dup = seen.has(item.json.email);\n  seen.add(item.json.email);\n  return { json: { ...item.json, is_duplicate: dup } };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -768,
+        -512
+      ],
+      "id": "757ef1bb-769b-4e85-a154-5af0d2b6a962",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b32f4284-8eef-426d-ba42-0b8db60682ae",
+              "leftValue": "={{ $json.is_duplicate }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -544,
+        -512
+      ],
+      "id": "59244770-5373-4a53-9504-2ac94ee95ba1",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.tier }}",
+                    "rightValue": "HOT",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "8261286c-93d9-4616-acca-2fbafbbb19a3"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "HOT"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "066c1d18-d83c-4b6a-957d-11941c495d7a",
+                    "leftValue": "={{ $json.tier }}",
+                    "rightValue": "WARM",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "WARM"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "6e34758d-0411-41d2-bdfd-d2b1103f9395",
+                    "leftValue": "={{ $json.tier }}",
+                    "rightValue": "COLD",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "COLD"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -320,
+        -432
+      ],
+      "id": "88569b58-be9d-4730-aeba-7b3199964521",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit?gid=576059557#gid=576059557",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1814097124,
+          "mode": "list",
+          "cachedResultName": "Suppressed",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit#gid=1814097124"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "company": "={{ $json.company }}",
+            "email": "={{ $json.email }}",
+            "reason": "={{ $json.is_duplicate }}",
+            "timestamp": "={{ $now }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reason",
+              "displayName": "reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -320,
+        -624
+      ],
+      "id": "3ed7c3f4-8eeb-4bff-9bc2-a361c0de9064",
+      "name": "Suppressed",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pCbxE9ECJnybsvn1",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "email": "={{ $json.email }}",
+        "additionalFields": {
+          "companyName": "={{ $json.company }}"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2.2,
+      "position": [
+        -96,
+        -704
+      ],
+      "id": "abf60b8b-fa5c-4ed0-a35f-4f48923ddf2b",
+      "name": "HOT",
+      "retryOnFail": true,
+      "alwaysOutputData": false,
+      "notesInFlow": false,
+      "credentials": {
+        "hubspotOAuth2Api": {
+          "id": "Lp0lIZeczhZ9pJsr",
+          "name": "HubSpot account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "email": "={{ $json.email }}",
+        "additionalFields": {
+          "companyName": "={{ $json.company }}"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2.2,
+      "position": [
+        -96,
+        -320
+      ],
+      "id": "d1ad97e2-d15e-4fad-b682-b2b956b623d9",
+      "name": "WARM",
+      "retryOnFail": true,
+      "credentials": {
+        "hubspotOAuth2Api": {
+          "id": "Lp0lIZeczhZ9pJsr",
+          "name": "HubSpot account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BL455S10U",
+          "mode": "list",
+          "cachedResultName": "n8n-testing-101"
+        },
+        "text": "=Hot  Lead :{{ $('Switch').item.json.company }}\n{{ $('Switch').item.json.email }} synced to hubspot",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.7,
+      "position": [
+        -96,
+        -512
+      ],
+      "id": "842eb53b-ef8f-4c2a-a782-891ffdaf7016",
+      "name": "SLACK (HOT)",
+      "webhookId": "17e1601e-fef2-4717-8753-827abfae3f55",
+      "retryOnFail": true,
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "skasQC3Hs7KtThMR",
+          "name": "Slack account 2"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk",
+          "mode": "list",
+          "cachedResultName": "Copy of Lead_Orchestrator_Sample (1)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2109278592,
+          "mode": "list",
+          "cachedResultName": "Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit#gid=2109278592"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "company": "={{ $('Switch').item.json.company }}",
+            "email": "={{ $('Switch').item.json.email }}",
+            "tier": "={{ $('Switch').item.json.tier }}",
+            "timestamp": "={{ $now }}",
+            "action": "Hubspot"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "tier",
+              "displayName": "tier",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "action",
+              "displayName": "action",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        128,
+        -896
+      ],
+      "id": "19ccc2a0-ff1e-43b3-be34-76527407e505",
+      "name": "Log HOT Sync",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pCbxE9ECJnybsvn1",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit?gid=1814097124#gid=1814097124",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 19297417,
+          "mode": "list",
+          "cachedResultName": "Nurture",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit#gid=19297417"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "company": "={{ $json.company }}",
+            "email": "={{ $json.email }}",
+            "score": "={{ $json.tier }}",
+            "timestamp": "={{ $now }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "score",
+              "displayName": "score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -96,
+        -128
+      ],
+      "id": "0b4eeab6-6514-46a5-aac5-1f60f7a5e606",
+      "name": "Route to Nurture",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pCbxE9ECJnybsvn1",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk",
+          "mode": "list",
+          "cachedResultName": "Copy of Lead_Orchestrator_Sample (1)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1825069943,
+          "mode": "list",
+          "cachedResultName": "Dead Letter",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit#gid=1825069943"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "company": "={{ $('Switch').item.json.company }}",
+            "email": "={{ $('Switch').item.json.email }}",
+            "tier": "={{ $('Switch').item.json.tier }}",
+            "timestamp": "={{ $now }}",
+            "failed_step": "Hubspot",
+            "error": "={{ $json.error.message }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "tier",
+              "displayName": "tier",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "failed_step",
+              "displayName": "failed_step",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error",
+              "displayName": "error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        128,
+        -704
+      ],
+      "id": "2b759f93-9c4c-4de6-b206-b0dd6f0b6db0",
+      "name": "Log Dead Letter(HOT Hubspot)",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pCbxE9ECJnybsvn1",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk",
+          "mode": "list",
+          "cachedResultName": "Copy of Lead_Orchestrator_Sample (1)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1825069943,
+          "mode": "list",
+          "cachedResultName": "Dead Letter",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit#gid=1825069943"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "error": "={{ $json.error.message }}",
+            "timestamp": "={{ $now }}",
+            "company": "={{ $('Switch').item.json.company }}",
+            "email": "={{ $('Switch').item.json.email }}",
+            "tier": "={{ $('Switch').item.json.tier }}",
+            "failed_step": "Slack"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "tier",
+              "displayName": "tier",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "failed_step",
+              "displayName": "failed_step",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error",
+              "displayName": "error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        128,
+        -512
+      ],
+      "id": "b97fdd38-6e95-401f-97f3-9d4e173eeeea",
+      "name": "Log Dead Letter (Slack)",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pCbxE9ECJnybsvn1",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk",
+          "mode": "list",
+          "cachedResultName": "Copy of Lead_Orchestrator_Sample (1)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1825069943,
+          "mode": "list",
+          "cachedResultName": "Dead Letter",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Br-7drBCDRFqe1Llxo-r5vISP1X8jJFNShtwFz2hHbk/edit#gid=1825069943"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "timestamp": "={{ $now }}",
+            "company": "={{ $('Switch').item.json.company }}",
+            "email": "={{ $('Switch').item.json.email }}",
+            "tier": "={{ $('Switch').item.json.tier }}",
+            "failed_step": " Hubspot",
+            "error": "={{ $json.error.message }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "tier",
+              "displayName": "tier",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "failed_step",
+              "displayName": "failed_step",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error",
+              "displayName": "error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        128,
+        -320
+      ],
+      "id": "144cf665-deb6-4f62-bf1b-29a2e2f3b5f0",
+      "name": "Log Dead Letter (WARM Hubspot)",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pCbxE9ECJnybsvn1",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Suppressed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "HOT",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "SLACK (HOT)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "WARM",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Route to Nurture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HOT": {
+      "main": [
+        [
+          {
+            "node": "Log HOT Sync",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Dead Letter(HOT Hubspot)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WARM": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Log Dead Letter (WARM Hubspot)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SLACK (HOT)": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Log Dead Letter (Slack)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "10ade401-23ac-469f-ae46-425274882f34",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8562bf056e529f76d8683b260a47180b4a7d7bd407873208d1601dfe544d2130"
+  },
+  "nodeGroups": [],
+  "id": "j0Zgt3FGKQ2vkVlZ",
+  "tags": []
+}
