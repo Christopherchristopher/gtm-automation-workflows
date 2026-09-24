@@ -1,0 +1,531 @@
+{
+  "name": "LEAD  INTAKE AND SCORING ROUTER",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead_intake",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -464,
+        0
+      ],
+      "id": "0efacfb9-3317-4066-af09-7afdaefa499a",
+      "name": "Webhook",
+      "webhookId": YOUR_WEEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "body.leads",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        0
+      ],
+      "id": "a20ae495-56a2-4895-9fd3-a74badf79d5a",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8253febd-23f1-4dfa-a013-e5216d6ca637",
+              "name": "=email",
+              "value": "={{ $json.email.toLowerCase().trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "e438b7a7-0f89-4960-9d4c-47431f73aa14",
+              "name": "name",
+              "value": "={{ $json.name.trim()}}",
+              "type": "string"
+            },
+            {
+              "id": "2aa10f82-ece1-430a-8ddc-0437e3793cf7",
+              "name": "=domain",
+              "value": "={{ $json.email.toLowerCase().split(\"@\")[1] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -16,
+        0
+      ],
+      "id": "87128651-3f2f-4c73-baff-cab2fafae83a",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "66c63993-a2c6-4347-b8b3-767e97fd16e5",
+              "leftValue": "={{ $json.domain }}",
+              "rightValue": " null",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "b4c62b24-1cf7-4890-b1f9-79fb07f66033",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const employees = $json.employees || 0;\nconst title = ($json.title || '').toLowerCase();\n\nlet score = 0;\nif (employees >= 100) score += 40;\nelse if (employees >= 20) score += 20;\nif (/head|vp|director|chief|ceo|cto|cfo/.test(title)) score += 30;\n\nreturn { json: { ...$json, score } };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        432,
+        -96
+      ],
+      "id": "95a1b2a0-36a5-4c07-b5dc-c40b5b5509b1",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.score }}",
+                    "rightValue": 70,
+                    "operator": {
+                      "type": "number",
+                      "operation": "gte"
+                    },
+                    "id": "8fad2c7a-2446-4e5c-a50a-c09d54d33263"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "HOT"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "d60c249a-9229-428f-ab04-1b71124bc3f9",
+                    "leftValue": "={{ $json.score }}",
+                    "rightValue": 40,
+                    "operator": {
+                      "type": "number",
+                      "operation": "gte"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "WARM"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "COLD"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        656,
+        -112
+      ],
+      "id": "3f01f4ec-f9a7-437b-ba4f-81bf8fde4ebd",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "email": "={{ $json.email }}",
+        "additionalFields": {
+          "companyName": "={{ $json.company }}",
+          "firstName": "={{ $json.name.split(\" \")[0] }}",
+          "jobTitle": "={{ $json.title }}",
+          "leadStatus": "NEW"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2.2,
+      "position": [
+        880,
+        -192
+      ],
+      "id": "6220924c-6366-4f9f-8613-06321df9047d",
+      "name": "Create or update a contact",
+      "credentials": {
+        "hubspotOAuth2Api": {
+          "id": "Lp0lIZeczhZ9pJsr",
+          "name": "HubSpot account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1-KFpIfW7IMPpkMwC-YGy-iUF17pJJPV28jDwPexnioA",
+          "mode": "list",
+          "cachedResultName": "Rejected",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-KFpIfW7IMPpkMwC-YGy-iUF17pJJPV28jDwPexnioA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-KFpIfW7IMPpkMwC-YGy-iUF17pJJPV28jDwPexnioA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "name": "={{ $json.name }}",
+            "email": "={{ $json.email }}",
+            "company": "={{ $json.company }}",
+            "title": "={{ $json.title }}",
+            "employees": "={{ $json.employees }}",
+            "reason": "invalid email"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "employees",
+              "displayName": "employees",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "reason",
+              "displayName": "reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        432,
+        96
+      ],
+      "id": "66176895-be61-4f2e-8976-50bfdc8ec900",
+      "name": "LOG REJECTED",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pCbxE9ECJnybsvn1",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1RCBce9fckdIUV6YoQOpFKLaBL3UeiVg3WcSKQHMkEBM",
+          "mode": "list",
+          "cachedResultName": "NURTURE",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RCBce9fckdIUV6YoQOpFKLaBL3UeiVg3WcSKQHMkEBM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RCBce9fckdIUV6YoQOpFKLaBL3UeiVg3WcSKQHMkEBM/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "name": "={{ $('Code in JavaScript').item.json.name }}",
+            "email": "={{ $('Code in JavaScript').item.json.email }}",
+            "company": "={{ $('Code in JavaScript').item.json.company }}",
+            "title": "={{ $('Code in JavaScript').item.json.title }}",
+            "employees": "={{ $('Code in JavaScript').item.json.employees }}",
+            "score": "={{ $('Code in JavaScript').item.json.score }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "employees",
+              "displayName": "employees",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "score",
+              "displayName": "score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        880,
+        0
+      ],
+      "id": "ab980b8d-53af-42fc-998a-ac052533aa86",
+      "name": "LOG NURTURE",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pCbxE9ECJnybsvn1",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "LOG REJECTED",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Create or update a contact",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create or update a contact",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "LOG NURTURE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "2db1bb4d-e3cb-44de-8283-b8631e72219d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "YOUR_INSTANCE_ID"
+  },
+  "nodeGroups": [],
+  "id": "FxTTDG69XaTk4Dd0",
+  "tags": []
+}
